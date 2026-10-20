@@ -1,0 +1,40 @@
+name: build-apk
+
+# 推送代码或手动触发时，自动构建可安装的测试版 APK。
+# 构建产物在 Actions 运行页的 Artifacts 里下载（app-debug.apk，已签名可直接安装）。
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: 安装依赖
+        run: flutter pub get
+
+      - name: 生成 Android 平台脚手架（只补缺失文件，不动 lib/ 与 assets/）
+        run: flutter create . --platforms=android
+
+      - name: 确保录音权限存在
+        run: |
+          if ! grep -q "RECORD_AUDIO" android/app/src/main/AndroidManifest.xml; then
+            sed -i 's|<manifest xmlns:android="http://schemas.android.com/apk/res/android">|<manifest xmlns:android="http://schemas.android.com/apk/res/android">\n    <uses-permission android:name="android.permission.RECORD_AUDIO"/>|' android/app/src/main/AndroidManifest.xml
+          fi
+
+      - name: 构建 Debug APK（已用调试密钥签名，可直接安装）
+        run: flutter build apk --debug
+
+      - name: 上传 APK 产物
+        uses: actions/upload-artifact@v4
+        with:
+          name: chinese-travel-debug-apk
+          path: build/app/outputs/flutter-apk/app-debug.apk
+          if-no-files-found: error

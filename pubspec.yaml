@@ -1,0 +1,23 @@
+name: chinese_travel
+description: Chinese for Arabic-speaking business travelers - data-driven learning app.
+publish_to: "none"
+version: 0.1.0
+
+environment:
+  sdk: ">=3.6.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  http: ^1.2.0
+  record: ^5.1.0            # 录音（直接出 16kHz mono WAV）
+  audioplayers: ^6.0.0      # 播放标准音
+  path_provider: ^2.1.0
+
+flutter:
+  assets:
+    - assets/content/
+    - assets/audio/sentences/
+    - assets/audio/words/
