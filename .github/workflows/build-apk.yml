@@ -17,34 +17,44 @@ jobs:
         with:
           channel: stable
 
-      - name: 安装依赖
+      - name: install-deps
         run: flutter pub get
 
-      - name: 生成 Android 平台脚手架（只补缺失文件，不动 lib/ 与 assets/）
+      - name: generate-android-scaffold
         run: flutter create . --platforms=android
 
-      - name: 提升 minSdk 至 23（record 5.x 插件硬性要求）
+      # record 5.x 插件硬性要求 minSdk 23；flutter 模板默认 21，不提升必然挂在清单合并。
+      # 覆盖所有已知模板写法（Kotlin DSL / Groovy，具名 / 数字 / 引用属性），改完硬校验。
+      - name: force-minSdk-23
         run: |
-          if [ -f android/app/build.gradle.kts ]; then
-            sed -i 's/minSdk = flutter.minSdkVersion/minSdk = 23/' android/app/build.gradle.kts
-            sed -i 's/minSdk = 21/minSdk = 23/' android/app/build.gradle.kts
+          set -e
+          for f in android/app/build.gradle.kts android/app/build.gradle; do
+            [ -f "$f" ] || continue
+            sed -i -E 's/minSdk([[:space:]]*)=.*/minSdk = 23/' "$f"
+            sed -i -E 's/minSdkVersion[[:space:]].*/minSdkVersion 23/' "$f"
+          done
+          echo "--- effective minSdk lines ---"
+          grep -nE "minSdk" android/app/build.gradle* || true
+          if ! grep -qE "minSdk(Version)?[[:space:]]*=?[[:space:]]*23" android/app/build.gradle*; then
+            echo "::error::minSdk 23 did not take effect - template syntax may have changed"
+            exit 1
           fi
-          if [ -f android/app/build.gradle ]; then
-            sed -i 's/minSdk flutter.minSdkVersion/minSdk 23/' android/app/build.gradle
-            sed -i 's/minSdk 21/minSdk 23/' android/app/build.gradle
-          fi
-          grep -n "minSdk" android/app/build.gradle* || true
 
-      - name: 确保录音权限存在
+      # 仓库已自带含 RECORD_AUDIO 的清单；此步仅作双保险，缺了才补。
+      - name: ensure-record-permission
         run: |
           if ! grep -q "RECORD_AUDIO" android/app/src/main/AndroidManifest.xml; then
             sed -i 's|<manifest xmlns:android="http://schemas.android.com/apk/res/android">|<manifest xmlns:android="http://schemas.android.com/apk/res/android">\n    <uses-permission android:name="android.permission.RECORD_AUDIO"/>|' android/app/src/main/AndroidManifest.xml
           fi
 
-      - name: 构建 Debug APK（已用调试密钥签名，可直接安装）
+      # Dart 代码错误在这步单独曝光，不用去 Gradle 输出里翻。
+      - name: dart-analyze
+        run: flutter analyze --no-pub --no-fatal-infos --no-fatal-warnings
+
+      - name: build-debug-apk
         run: flutter build apk --debug
 
-      - name: 上传 APK 产物
+      - name: upload-apk
         uses: actions/upload-artifact@v4
         with:
           name: chinese-travel-debug-apk
