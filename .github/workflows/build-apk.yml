@@ -1,10 +1,12 @@
 name: build-apk
 
-# 推送代码或手动触发时，自动构建可安装的测试版 APK。
-# 构建产物在 Actions 运行页的 Artifacts 里下载（app-debug.apk，已签名可直接安装）。
+# 推送代码 / 打版本 tag（v*）/ 手动触发时，自动构建可安装的测试版 APK。
+# - 每次构建：产物在 Actions 运行页的 Artifacts 里（app-debug.apk，可直接安装）
+# - 打 tag（如 v0.1）：构建成功后自动创建 GitHub Release，APK 永久可下载
 on:
   push:
     branches: [main, master]
+    tags: ['v*']
   workflow_dispatch:
 
 jobs:
@@ -111,3 +113,48 @@ jobs:
           name: chinese-travel-debug-apk
           path: build/app/outputs/flutter-apk/app-debug.apk
           if-no-files-found: error
+
+  # 打版本 tag（v0.1 / v0.2 ...）时：构建成功后自动建 Release 并附上 APK。
+  # Artifacts 有保留期会过期，Release 是永久下载位——给朋友分发用这个。
+  release:
+    needs: apk
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: chinese-travel-debug-apk
+          path: dist
+
+      # 文件名用 ASCII：朋友手机是阿拉伯语系统，中文文件名可能显示为方块。
+      - name: rename-apk
+        run: mv dist/app-debug.apk "dist/chinese-travel-${{ github.ref_name }}.apk"
+
+      - name: create-release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cat > notes.md <<'NOTES'
+          ## Chinese Travel ${{ github.ref_name }} - first testable build
+
+          ### What's inside
+          - Lesson 1 "At the airport": dialogue, vocabulary, sentence patterns, shadowing with pitch comparison, quiz
+          - Arabic interface (RTL), switchable to English
+          - Pronunciation comparison runs fully on-device (pitch curve, no internet, no account)
+
+          ### Install
+          1. Download the APK and transfer it to the phone
+          2. Tap to install; if Android warns about "unknown sources", allow it
+          3. No account, no internet needed
+
+          ### 中文说明
+          首个可测试版本：含「在机场」第 1 课（对话/词汇/句型/跟读对比/测验），
+          阿拉伯语界面，跟读对比为本地音高计算。APK 传到手机点击安装，
+          提示"未知来源应用"时点允许即可。无需账号、无需联网。
+          NOTES
+          gh release create "${{ github.ref_name }}" \
+            dist/*.apk \
+            --title "Chinese Travel ${{ github.ref_name }} (test build)" \
+            --notes-file notes.md
