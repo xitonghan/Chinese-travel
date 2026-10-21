@@ -91,11 +91,11 @@ class ReviewScreen extends StatelessWidget {
             // 测试版本：直接进入唯一课程（复习流程后续版本做）
             onPressed: () {
               final lesson = state.currentLesson();
-              if (lesson != null) {
+              if (lesson case final l?) {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (_) => LessonScreen(lesson: lesson)));
+                        builder: (_) => LessonScreen(lesson: l)));
               }
             },
             child: Text(ui.get('start_review'),

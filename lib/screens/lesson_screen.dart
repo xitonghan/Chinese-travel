@@ -593,7 +593,7 @@ class _ShadowViewState extends State<_ShadowView> {
               ),
 
               // 对比结果
-              if (r != null && s.f0 != null) ...[
+              if (r case final rr? && s.f0 case final ff?) ...[
                 const SizedBox(height: 12),
                 Container(
                   padding: const EdgeInsets.all(12),
@@ -611,8 +611,8 @@ class _ShadowViewState extends State<_ShadowView> {
                               fontWeight: FontWeight.w700)),
                       const SizedBox(height: 8),
                       PitchChart(
-                        standard: s.f0!,
-                        userF0: r.userF0,
+                        standard: ff,
+                        userF0: rr.userF0,
                         userSr: 16000,
                         zh: s.zh,
                         ui: widget.ui,
@@ -620,7 +620,7 @@ class _ShadowViewState extends State<_ShadowView> {
                       // 判定条：达到阈值 → 通过；否则提示复习规则
                       Builder(builder: (context) {
                         final al = PitchChart.align(
-                            s.f0!, r.userF0, 16000, s.zh);
+                            ff, rr.userF0, 16000, s.zh);
                         final avg = al.scores.isEmpty
                             ? 0.0
                             : al.scores.reduce((a, b) => a + b) /

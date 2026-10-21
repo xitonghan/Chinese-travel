@@ -30,8 +30,13 @@ class ContentPack {
       );
 
   UiStrings ui(String lang) => uiStrings[lang] ?? uiStrings["en"]!;
-  WordEntry? word(String id) =>
-      words.firstWhere((w) => w.id == id, orElse: () => words.first);
+  /// 按 id 取词；数据缺失时返回占位词（测试版不崩溃，调用方无需判空）。
+  WordEntry word(String id) {
+    for (final w in words) {
+      if (w.id == id) return w;
+    }
+    return WordEntry(id: id, hanzi: id, pinyin: '', audio: '', ar: '', en: '');
+  }
   List<Lesson> lessonsOfPath(String pathId) =>
       lessons.where((l) => l.path == pathId).toList();
 }

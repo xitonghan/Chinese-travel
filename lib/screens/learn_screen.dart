@@ -69,7 +69,7 @@ class LearnScreen extends StatelessWidget {
         const SizedBox(height: 16),
 
         // 继续课程按钮
-        if (lesson != null)
+        if (lesson case final l?)
           SizedBox(
             width: double.infinity,
             child: FilledButton(
@@ -80,7 +80,7 @@ class LearnScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(14)),
               ),
               onPressed: () => Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => LessonScreen(lesson: lesson))),
+                  MaterialPageRoute(builder: (_) => LessonScreen(lesson: l))),
               child: Text(ui.get('continue_chip'),
                   style: const TextStyle(
                       color: Colors.white,

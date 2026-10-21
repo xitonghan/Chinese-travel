@@ -23,6 +23,14 @@ jobs:
       - name: generate-android-scaffold
         run: flutter create . --platforms=android
 
+      # flutter create 会顺带生成两个破坏静态分析的文件：
+      # test/widget_test.dart 引用不存在的 MyApp；analysis_options.yaml 引用
+      # 未安装的 flutter_lints。v0.1 无测试，直接清掉。
+      - name: drop-generated-template-noise
+        run: |
+          rm -rf test
+          rm -f analysis_options.yaml
+
       # record 5.x 插件硬性要求 minSdk 23；flutter 模板默认 21，不提升必然挂在清单合并。
       # 覆盖所有已知模板写法（Kotlin DSL / Groovy，具名 / 数字 / 引用属性），改完硬校验。
       - name: force-minSdk-23
