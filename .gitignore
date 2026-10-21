@@ -34,3 +34,4 @@ Thumbs.db
 
 # CI diagnostics
 analyze.log
+build.log

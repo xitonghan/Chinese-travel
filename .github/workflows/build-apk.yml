@@ -84,7 +84,26 @@ jobs:
           if-no-files-found: warn
 
       - name: build-debug-apk
-        run: flutter build apk --debug
+        run: |
+          set +e
+          flutter build apk --debug > build.log 2>&1
+          code=$?
+          set -e
+          echo "----- flutter build output (exit $code) -----"
+          tail -60 build.log
+          { grep -inE 'error|failure|exception|caused by|what went wrong|went wrong' build.log || true; } | head -30 | while IFS= read -r line; do
+            printf '::error::%s\n' "$line"
+          done
+          printf '::error::build exit code %s\n' "$code"
+          exit $code
+
+      - name: upload-build-log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: build.log
+          if-no-files-found: warn
 
       - name: upload-apk
         uses: actions/upload-artifact@v4
