@@ -12,9 +12,16 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   http: ^1.2.0
-  record: ^5.1.0            # 录音（直接出 16kHz mono WAV）
+  # 录音：5.x 的 record_linux 0.7.2 与平台接口签名不匹配（生态断裂），
+  # 且 Flutter 编译 kernel 时会编译所有平台实现 → Linux 构建主机必崩。
+  # 升到 7.x（2.x 接口线，全平台实现协同发布）。API 与 5.x 完全一致。
+  record: 7.1.2
   audioplayers: ^6.0.0      # 播放标准音
   path_provider: ^2.1.0
+
+# record_android 2.2.0 起 minSdk 要求 24；测试版保持 23（覆盖 Android 6 旧机）。
+dependency_overrides:
+  record_android: 2.1.2
 
 flutter:
   assets:
