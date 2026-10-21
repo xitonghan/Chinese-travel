@@ -69,8 +69,8 @@ class PitchDetector {
       if (minV > 0.6) return 0.0;
     }
 
-    // 抛物线插值
-    var tau = tauMin + best;
+    // 抛物线插值（tau 保持 double，shift 是小数）
+    var tau = (tauMin + best).toDouble();
     if (best > 0 && best < cmnd.length - 1) {
       final y0 = cmnd[best - 1], y1 = cmnd[best], y2 = cmnd[best + 1];
       final denom = 2 * (2 * y1 - y0 - y2);

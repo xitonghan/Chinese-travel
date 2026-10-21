@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'app_state.dart';
-import 'home_shell.dart';
+import 'screens/home_shell.dart';
 import 'theme.dart';
 
 void main() => runApp(const ChineseTravelApp());

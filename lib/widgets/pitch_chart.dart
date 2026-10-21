@@ -267,5 +267,14 @@ class _F0Painter extends CustomPainter {
 
   @override
   bool shouldRepaint(_F0Painter old) =>
-      !listEquals(std, old.std) || !listEquals(user, old.user);
+      !_sameList(std, old.std) || !_sameList(user, old.user);
+}
+
+/// 逐元素比较（不依赖 foundation 的 listEquals，跨 Flutter 版本稳定）。
+bool _sameList(List<double> a, List<double> b) {
+  if (a.length != b.length) return false;
+  for (var i = 0; i < a.length; i++) {
+    if (a[i] != b[i]) return false;
+  }
+  return true;
 }

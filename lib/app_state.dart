@@ -10,6 +10,10 @@ class AppStateScope extends InheritedWidget {
   static AppState of(BuildContext context) => context
       .dependOnInheritedWidgetOfExactType<AppStateScope>()!
       .state;
+
+  @override
+  bool updateShouldNotify(AppStateScope oldWidget) =>
+      state != oldWidget.state;
 }
 
 class AppState extends ChangeNotifier {
