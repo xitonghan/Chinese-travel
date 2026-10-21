@@ -593,79 +593,80 @@ class _ShadowViewState extends State<_ShadowView> {
               ),
 
               // 对比结果
-              if (r case final rr? && s.f0 case final ff?) ...[
-                const SizedBox(height: 12),
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: AppColors.cream,
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Text(widget.ui.get('compare_title'),
-                          style: const TextStyle(
-                              color: AppColors.ink,
-                              fontSize: 13,
-                              fontWeight: FontWeight.w700)),
-                      const SizedBox(height: 8),
-                      PitchChart(
-                        standard: ff,
-                        userF0: rr.userF0,
-                        userSr: 16000,
-                        zh: s.zh,
-                        ui: widget.ui,
-                      ),
-                      // 判定条：达到阈值 → 通过；否则提示复习规则
-                      Builder(builder: (context) {
-                        final al = PitchChart.align(
-                            ff, rr.userF0, 16000, s.zh);
-                        final avg = al.scores.isEmpty
-                            ? 0.0
-                            : al.scores.reduce((a, b) => a + b) /
-                                al.scores.length;
-                        final pass = avg >= widget.threshold;
-                        return Container(
-                          margin: const EdgeInsets.only(top: 10),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 8),
-                          decoration: BoxDecoration(
-                            color: pass
-                                ? AppColors.green.withValues(alpha: 0.10)
-                                : AppColors.amber.withValues(alpha: 0.12),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(
-                                  pass
-                                      ? Icons.check_circle
-                                      : Icons.lightbulb_outline,
-                                  color: pass
-                                      ? AppColors.green
-                                      : AppColors.amber,
-                                  size: 16),
-                              const SizedBox(width: 6),
-                              Expanded(
-                                child: Text(
+              if (r case final rr?)
+                if (s.f0 case final ff?) ...[
+                  const SizedBox(height: 12),
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: AppColors.cream,
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(widget.ui.get('compare_title'),
+                            style: const TextStyle(
+                                color: AppColors.ink,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w700)),
+                        const SizedBox(height: 8),
+                        PitchChart(
+                          standard: ff,
+                          userF0: rr.userF0,
+                          userSr: 16000,
+                          zh: s.zh,
+                          ui: widget.ui,
+                        ),
+                        // 判定条：达到阈值 → 通过；否则提示复习规则
+                        Builder(builder: (context) {
+                          final al = PitchChart.align(
+                              ff, rr.userF0, 16000, s.zh);
+                          final avg = al.scores.isEmpty
+                              ? 0.0
+                              : al.scores.reduce((a, b) => a + b) /
+                                  al.scores.length;
+                          final pass = avg >= widget.threshold;
+                          return Container(
+                            margin: const EdgeInsets.only(top: 10),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: pass
+                                  ? AppColors.green.withValues(alpha: 0.10)
+                                  : AppColors.amber.withValues(alpha: 0.12),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(
                                     pass
-                                        ? widget.ui.get('got_it')
-                                        : widget.ui.get('below_threshold'),
-                                    style: TextStyle(
-                                        color: pass
-                                            ? AppColors.green
-                                            : AppColors.amber,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w600)),
-                              ),
-                            ],
-                          ),
-                        );
-                      }),
-                    ],
+                                        ? Icons.check_circle
+                                        : Icons.lightbulb_outline,
+                                    color: pass
+                                        ? AppColors.green
+                                        : AppColors.amber,
+                                    size: 16),
+                                const SizedBox(width: 6),
+                                Expanded(
+                                  child: Text(
+                                      pass
+                                          ? widget.ui.get('got_it')
+                                          : widget.ui.get('below_threshold'),
+                                      style: TextStyle(
+                                          color: pass
+                                              ? AppColors.green
+                                              : AppColors.amber,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w600)),
+                                ),
+                              ],
+                            ),
+                          );
+                        }),
+                      ],
+                    ),
                   ),
-                ),
               ],
             ],
           ),
