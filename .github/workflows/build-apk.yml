@@ -23,6 +23,18 @@ jobs:
       - name: 生成 Android 平台脚手架（只补缺失文件，不动 lib/ 与 assets/）
         run: flutter create . --platforms=android
 
+      - name: 提升 minSdk 至 23（record 5.x 插件硬性要求）
+        run: |
+          if [ -f android/app/build.gradle.kts ]; then
+            sed -i 's/minSdk = flutter.minSdkVersion/minSdk = 23/' android/app/build.gradle.kts
+            sed -i 's/minSdk = 21/minSdk = 23/' android/app/build.gradle.kts
+          fi
+          if [ -f android/app/build.gradle ]; then
+            sed -i 's/minSdk flutter.minSdkVersion/minSdk 23/' android/app/build.gradle
+            sed -i 's/minSdk 21/minSdk 23/' android/app/build.gradle
+          fi
+          grep -n "minSdk" android/app/build.gradle* || true
+
       - name: 确保录音权限存在
         run: |
           if ! grep -q "RECORD_AUDIO" android/app/src/main/AndroidManifest.xml; then
