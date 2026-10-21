@@ -47,9 +47,9 @@ chinese_travel/
 **方式一：GitHub 自动构建（推荐，本机不用装 Flutter）**
 
 1. 把本项目推到 GitHub（见下方《发布到 GitHub》）。
-2. 打开仓库页面 → 上方 **Actions** → 点最新的 `build-apk` 运行。
-3. 等 3–5 分钟变绿，页面底部 **Artifacts** 里下载 `chinese-travel-debug-apk`。
-4. 解压得到 `app-debug.apk`，发给测试者安装（需在手机上允许"安装未知来源应用"）。
+2. 每次推送代码，Actions 自动构建 → 运行页底部 **Artifacts** 下载 `chinese-travel-debug-apk`（zip，解压出 `app-debug.apk`）。
+3. 打版本标签（`git tag v0.2 && git push origin v0.2`）→ 构建成功后**自动创建 Release**，APK 永久可下载（Artifacts 有保留期会过期，Release 不会）。
+4. 发给测试者安装（需在手机上允许"安装未知来源应用"）。
 
 **方式二：本机构建**
 
@@ -105,9 +105,9 @@ Chinese item has pinyin plus Arabic/English translations.
 **Option A — GitHub Actions (no local Flutter needed)**
 
 1. Push this project to GitHub (see below).
-2. Repo page → **Actions** tab → latest `build-apk` run.
-3. When green, download the `chinese-travel-debug-apk` artifact from the bottom.
-4. Unzip → `app-debug.apk` → send to testers (enable "install unknown apps").
+2. Every code push → Actions builds → download `chinese-travel-debug-apk` from the run's Artifacts (zip → `app-debug.apk`).
+3. Push a version tag (`git tag v0.2 && git push origin v0.2`) → a **GitHub Release** is created automatically with the APK attached — a permanent download home (artifacts expire, releases don't).
+4. Send `app-debug.apk` to testers (enable "install unknown apps").
 
 **Option B — local build**
 
@@ -163,9 +163,9 @@ hot updates without shipping a new app.
 **الطريقة أ — عبر GitHub Actions (بدون تثبيت Flutter)**
 
 1. ارفع المشروع إلى GitHub.
-2. صفحة المستودع → تبويب **Actions** → آخر تشغيل لـ `build-apk`.
-3. بعد نجاحه (اللون الأخضر)، نزّل الملف `chinese-travel-debug-apk` من الأسفل.
-4. فك الضغط → `app-debug.apk` → أرسله للمُجرّب (يحتاج تفعيل «تثبيت تطبيقات غير معروفة»).
+2. كل رفع للكود → يُبنى APK تلقائياً → نزّل `chinese-travel-debug-apk` من Artifacts أسفل صفحة التشغيل (ملف مضغوط → `app-debug.apk`).
+3. ارفع وسم إصدار (`git tag v0.2 && git push origin v0.2`) → يُنشأ **Release** تلقائياً مع الـ APK — مكان دائم للتنزيل (الـ Artifacts تنتهي صلاحيتها، أمّا Release فلا).
+4. أرسل `app-debug.apk` للمُجرّب (يحتاج تفعيل «تثبيت تطبيقات غير معروفة»).
 
 **الطريقة ب — بناء محلي**
 
